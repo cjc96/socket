@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <link href="//cdn.bootcss.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form p { color:white; font-size: 1.2em; margin-left:30px; margin-bottom:15px;}
+      form p a {padding:5px; position:absolute; right:10px;}
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class='row fluid' align='center' style='margin-top:30px'>
+        <h4>宿舍匿名聊天室</h4>
+      </div>
+      <div style="height:450px; overflow:auto" >
+        <ul id="messages" class='list-group'></ul>
+      </div>
+    </div>
+    <form action="">
+      <div class='row' style="maring:10px">
+        <p>当前昵称：“<span id="name">匿名</span>” <a class="btn btn-warning btn-sm" onclick="change_name()">更名</a></p>
+      </div>
+      <input id="m" autocomplete="off" /><button class="btn btn-primary">发送</button>
+    </form>
+    <script>
+      var socket = io();
+      var current_name = "匿名";
+      $('form').submit(function(){
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+      socket.on('chat message', function(msg){
+        $('#messages').append($('<li class="list-group-item list-group-item-info">').text(current_name + " : " + msg));
+      });
+    </script>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                      &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+              更改昵称
+            </h4>
+          </div>
+          <div class="modal-body">
+            <input type="text" id="input_name">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+              关闭
+            </button>
+            <button type="button" class="btn btn-primary" onclick="confirm_change()">
+              提交更改
+            </button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div>
+    </div>
+    <script>
+      function change_name()
+      {
+        $("#myModal").modal("show");  
+        return false;
+      }
+      function confirm_change()
+      {
+        current_name=$('#input_name').val();
+        $('#name').html($('#input_name').val());
+        $("#myModal").modal("hide");  
+      }
+    </script>
+  </body>
+</html>
