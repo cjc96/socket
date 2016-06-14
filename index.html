@@ -37,12 +37,12 @@
       var socket = io();
       var current_name = "匿名";
       $('form').submit(function(){
-        socket.emit('chat message', $('#m').val());
+        socket.emit('chat message', current_name + " : " + $('#m').val());
         $('#m').val('');
         return false;
       });
       socket.on('chat message', function(msg){
-        $('#messages').append($('<li class="list-group-item list-group-item-info">').text(current_name + " : " + msg));
+        $('#messages').append($('<li class="list-group-item list-group-item-info">').text(  msg));
       });
     </script>
 
@@ -56,7 +56,7 @@
             </button>
             <h4 class="modal-title" id="myModalLabel">
               更改昵称
-            </h4>
+            </h4> 
           </div>
           <div class="modal-body">
             <input type="text" id="input_name">
